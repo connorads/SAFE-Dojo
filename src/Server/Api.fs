@@ -51,7 +51,5 @@ let apiRouter = router {
     pipe_through (pipeline { set_header "x-pipeline-type" "Api" })
     getf "/distance/%s" getDistanceFromLondon
     getf "/crime/%s" getCrimeReport
-
-    (* Task 4.2 WEATHER: Hook up the weather endpoint to the getWeather function. *)
-
+    getf "/weather/%s" getWeather
     }
