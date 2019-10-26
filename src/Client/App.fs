@@ -33,6 +33,7 @@ type Msg =
     | PostcodeChanged of string
     | GotReport of Report
     | ErrorMsg of exn
+    | Clear
 
 /// The init function is called to start the message pump with an initial view.
 let init () =
@@ -54,6 +55,7 @@ let getResponse postcode = promise {
 /// The update function knows how to update the model given a message.
 let update msg model =
     match model, msg with
+    | _, Clear -> init()
     | { ValidationError = None; Postcode = postcode }, GetReport ->
         { model with ServerState = Loading }, Cmd.ofPromise getResponse postcode GotReport ErrorMsg
     | _, GetReport -> model, Cmd.none
@@ -182,6 +184,10 @@ let view model dispatch =
                                       Button.Disabled (model.ValidationError.IsSome)
                                       Button.IsLoading (model.ServerState = ServerState.Loading) ]
                                     [ str "Submit" ]
+                                Button.button
+                                    [ Button.Color IsPrimary
+                                      Button.OnClick (fun _ -> dispatch Clear) ]
+                                    [ str "Clear" ]
                             ]
                         ]
                     ]
